@@ -25,9 +25,11 @@ module Devise
       end
 
       # Checks whether the user session has expired based on configured time.
-      def timedout?(last_access)
+      def timedout?(last_access, browser_type: 'web')
         return false if remember_exists_and_not_expired?
-        !timeout_in.nil? && last_access && last_access <= timeout_in.ago
+
+        timeout = timeout_in.respond_to?(:[]) && timeout_in[browser_type] || timeout_in
+        !timeout.nil? && last_access && last_access <= timeout.ago
       end
 
       def timeout_in
