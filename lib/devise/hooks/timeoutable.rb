@@ -18,9 +18,9 @@ Warden::Manager.after_set_user do |record, warden, options|
 
     proxy = Devise::Hooks::Proxy.new(warden)
 
-    browser_mode = env['BOARDIQ_MOBILE_CLIENT'] ? 'app' : 'web'
+    browser_type = env['BOARDIQ_MOBILE_CLIENT'] ? 'app' : 'web'
 
-    if record.timedout?(last_request_at, browser_mode) && !env['devise.skip_timeout']
+    if record.timedout?(last_request_at, browser_type: browser_type) && !env['devise.skip_timeout']
       Devise.sign_out_all_scopes ? proxy.sign_out : proxy.sign_out(scope)
 
       if record.respond_to?(:expire_auth_token_on_timeout) && record.expire_auth_token_on_timeout
